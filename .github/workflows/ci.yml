@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    # Not applied to tags.
+    paths-ignore: ['**.md', 'LICENSE', '.gitignore']
+  pull_request:
+    paths-ignore: ['**.md', 'LICENSE', '.gitignore']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: make test
+
+  # Every run builds the package, so a broken Makefile shows before release day.
+  package:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: make package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: owrtfetch
+          path: bin/owrtfetch-*.apk
+          if-no-files-found: error
+
+  # A tag vX.Y.Z releases the package built from it.
+  release:
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check the tag names the package's version
+        run: |
+          version=$(sed -n 's/^PKG_VERSION:=//p' openwrt/owrtfetch/Makefile)
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "tag $GITHUB_REF_NAME does not match PKG_VERSION $version" >&2
+            exit 1
+          fi
+      - uses: actions/download-artifact@v8
+        with:
+          name: owrtfetch
+          path: artifacts
+      - run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME" artifacts/*
+        env:
+          GH_TOKEN: ${{ github.token }}

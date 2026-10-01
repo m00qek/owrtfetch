@@ -1,0 +1,20 @@
+#!/usr/bin/ucode
+'use strict';
+
+import { stdout, stderr } from 'fs';
+import { main } from 'owrtfetch';
+
+const result = main(ARGV, {
+	tty: stdout.isatty(),
+	no_color: getenv('NO_COLOR'),
+	lc_all: getenv('LC_ALL'),
+	lc_ctype: getenv('LC_CTYPE'),
+	lang: getenv('LANG'),
+});
+
+if (result.out)
+	stdout.write(result.out);
+if (result.err)
+	stderr.write(result.err);
+
+exit(result.code);

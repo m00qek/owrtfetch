@@ -1,0 +1,5 @@
+# Packages built by make package
+/bin/
+
+# Counterexamples utest saves when a property fails
+**/.utest/
