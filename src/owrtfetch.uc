@@ -13,16 +13,30 @@ import { collect } from 'owrtfetch.collect';
 import { summarize } from 'owrtfetch.summarize';
 import { render, GLYPHS } from 'owrtfetch.render';
 
-const USAGE = `Usage: owrtfetch [--json] [--utf8 | --ascii]
+// The released version; a test holds it to PKG_VERSION in the package Makefile.
+export const VERSION = '0.1.0';
 
-Prints the OpenWrt logo beside a summary of this system. Colours are left out when
-NO_COLOR is set or the output is not a terminal. Characters beyond ASCII, such as the
-degree sign, are used only when the locale (LC_ALL, LC_CTYPE or LANG) is UTF-8.
+// The help follows docopt's grammar (docopt.org), though nothing parses it: a usage
+// pattern per line, then the options. An error repeats only the usage patterns.
+const USAGE = `Usage:
+  owrtfetch [--json] [--utf8 | --ascii]
+  owrtfetch -h | --help
+  owrtfetch --version
+`;
 
-  --json      the summary's data as JSON instead
-  --utf8      use UTF-8 characters whatever the locale
-  --ascii     use only ASCII whatever the locale
-  -h, --help  this help
+const HELP = `owrtfetch: the OpenWrt logo beside a summary of this system.
+
+${USAGE}
+Options:
+  --json      Print the summary's data as JSON instead.
+  --utf8      Use UTF-8 characters, whatever the locale.
+  --ascii     Use only ASCII, whatever the locale.
+  -h --help   Show this screen.
+  --version   Show version.
+
+Colours are left out when NO_COLOR is set or the output is not a terminal.
+Characters beyond ASCII, such as the degree sign, are used only when the locale
+(LC_ALL, LC_CTYPE or LANG) is UTF-8. Of --utf8 and --ascii, the last one wins.
 `;
 
 // Whether the locale is UTF-8, in POSIX's order: LC_ALL, then LC_CTYPE, then LANG, each
@@ -33,13 +47,18 @@ function utf8_locale(env) {
 	return match(locale ?? '', /utf-?8/i) != null;
 }
 
-// The command line, `owrtfetch [--json] [--utf8 | --ascii]`, as the exit code and what
-// goes to stdout and stderr. `env.tty` says whether stdout is a terminal; `env.no_color`
+// The command line, as USAGE has it, as the exit code and what goes to stdout and
+// stderr. As in docopt, --help and --version win wherever they appear. `env.tty` says whether stdout is a terminal; `env.no_color`
 // is NO_COLOR, which turns colour off when set to anything but ''; `env.lc_all`,
 // `env.lc_ctype` and `env.lang` are the locale variables, which --utf8 and --ascii
 // override, the last given winning.
 export function main(args, env) {
 	let json = false, utf8 = null;
+
+	if (index(args, '-h') >= 0 || index(args, '--help') >= 0)
+		return { code: 0, out: HELP };
+	if (index(args, '--version') >= 0)
+		return { code: 0, out: `owrtfetch ${VERSION}\n` };
 
 	for (let a in args) {
 		if (a == '--json')
@@ -48,8 +67,6 @@ export function main(args, env) {
 			utf8 = true;
 		else if (a == '--ascii')
 			utf8 = false;
-		else if (a == '-h' || a == '--help')
-			return { code: 0, out: USAGE };
 		else
 			return { code: 2, err: `owrtfetch: unknown option '${a}'\n\n${USAGE}` };
 	}

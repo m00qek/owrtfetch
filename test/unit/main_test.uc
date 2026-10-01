@@ -1,7 +1,8 @@
 'use strict';
 
 import { describe, it, afterEach, mock, assert } from 'utest';
-import { main } from 'owrtfetch';
+import { readfile } from 'fs';
+import { main, VERSION } from 'owrtfetch';
 import { collect } from 'owrtfetch.collect';
 import { ROUTER } from 'owrtfetch_fixtures';
 import { on } from 'owrtfetch_helpers';
@@ -44,11 +45,41 @@ describe('main()', () => {
 		assert.match(on(ROUTER, null, collect), json(result.out));
 	});
 
-	it('prints its usage with --help', () => {
-		const result = main([ '--help' ], { tty: true });
+	// The usage patterns, as docopt writes them.
+	const USAGE = 'Usage:\n' +
+		'  owrtfetch [--json] [--utf8 | --ascii]\n' +
+		'  owrtfetch -h | --help\n' +
+		'  owrtfetch --version\n';
 
-		assert.match(0, result.code);
-		assert.match(0, index(result.out, 'Usage: owrtfetch [--json] [--utf8 | --ascii]'));
+	it('prints its help with --help or -h, in docopt\'s grammar', () => {
+		for (let flag in [ '--help', '-h' ]) {
+			const result = main([ flag ], { tty: true });
+
+			assert.match(0, result.code, flag);
+			assert.match(0, index(result.out, 'owrtfetch: the OpenWrt logo beside a summary of this system.\n\n' + USAGE + '\nOptions:\n'), flag);
+			for (let option in [ '--json', '--utf8', '--ascii', '-h --help', '--version' ])
+				assert.match(true, match(result.out, regexp(`\n  ${option} +[A-Z]`)) != null, `${flag}: ${option}`);
+		}
+	});
+
+	it('keeps its help within 80 columns', () => {
+		assert.match([], filter(split(main([ '--help' ], {}).out, '\n'), l => length(l) > 80));
+	});
+
+	it('prints its version with --version', () => {
+		assert.match({ code: 0, out: `owrtfetch ${VERSION}\n` }, main([ '--version' ], {}));
+	});
+
+	it('is the version the package Makefile releases', () => {
+		const makefile = readfile('openwrt/owrtfetch/Makefile');
+
+		assert.match(VERSION, match(makefile, /\nPKG_VERSION:=([^\n]+)/)?.[1]);
+	});
+
+	it('answers --help and --version wherever they appear, as docopt does', () => {
+		assert.match(0, index(main([ '--json', '--nope', '--help' ], {}).out, 'owrtfetch: the OpenWrt logo'));
+		assert.match(`owrtfetch ${VERSION}\n`, main([ '--nope', '--version' ], {}).out);
+		assert.match(0, index(main([ '--version', '-h' ], {}).out, 'owrtfetch: the OpenWrt logo'));
 	});
 
 	// Which glyphs the plain summary of the router is written with: its CPU is at 47.2°C
@@ -122,6 +153,6 @@ describe('main()', () => {
 
 		assert.match(2, result.code);
 		assert.match(null, result.out);
-		assert.match(0, index(result.err, "owrtfetch: unknown option '--jsno'"));
+		assert.match("owrtfetch: unknown option '--jsno'\n\n" + USAGE, result.err);
 	});
 });

@@ -60,7 +60,17 @@ apk add --allow-untrusted owrtfetch-0.1.0-r1.apk
 ## Usage
 
 ```
-owrtfetch [--json] [--utf8 | --ascii]
+Usage:
+  owrtfetch [--json] [--utf8 | --ascii]
+  owrtfetch -h | --help
+  owrtfetch --version
+
+Options:
+  --json      Print the summary's data as JSON instead.
+  --utf8      Use UTF-8 characters, whatever the locale.
+  --ascii     Use only ASCII, whatever the locale.
+  -h --help   Show this screen.
+  --version   Show version.
 ```
 
 To show it at login, run it from a file in `/etc/profile.d/`, only for interactive shells
