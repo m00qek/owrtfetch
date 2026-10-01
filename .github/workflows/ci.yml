@@ -22,6 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: make test
+      - run: make test-feed
 
   # Every run builds the package, so a broken Makefile shows before release day.
   package:

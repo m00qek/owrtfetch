@@ -65,6 +65,10 @@ make test      # unit and property tests with utest, in an OpenWrt 25.12 contain
 make package   # builds bin/owrtfetch-<version>.apk with the OpenWrt SDK
 ```
 
+After tagging a release, `make feed-makefile VERSION=<version> OUT=<feed>/owrtfetch/Makefile`
+writes the Makefile for the [packages.ucode.dev](https://github.com/m00qek/packages.ucode.dev)
+feed from the release tarball.
+
 The code is one module, `src/owrtfetch.uc`, in four layers: `collect()` reads the system
 into data, `summarize()` turns it into labelled lines, `render()` lays them out beside the
 logo, and `main()` handles the command line.
