@@ -36,8 +36,22 @@ Requires OpenWrt 25.12 or later. The package is architecture-independent (`noarc
 
 ## Install
 
-Download the `.apk` from the [latest release](../../releases/latest), copy it to the router,
-and install it:
+From the [packages.ucode.dev](https://github.com/m00qek/packages.ucode.dev) feed, which
+signs its packages, so apk verifies them and `apk upgrade` keeps owrtfetch current:
+
+```sh
+# Trust the feed's signing key, and add the feed
+wget -O /etc/apk/keys/packages.ucode.dev.pem \
+  https://m00qek.github.io/packages.ucode.dev/25.12/feed.pub.pem
+echo "https://m00qek.github.io/packages.ucode.dev/25.12" \
+  >> /etc/apk/repositories.d/customfeeds.list
+
+apk update
+apk add owrtfetch
+```
+
+Or download the `.apk` from the [latest release](../../releases/latest), copy it to the
+router, and install it unverified:
 
 ```sh
 apk add --allow-untrusted owrtfetch-0.1.0-r1.apk
