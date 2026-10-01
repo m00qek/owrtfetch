@@ -88,6 +88,9 @@ system into data, `src/owrtfetch/summarize.uc` turns it into labelled lines,
 `src/owrtfetch/render.uc` lays them out beside the logo, and `src/owrtfetch.uc` handles
 the command line. Only `collect.uc` touches the system.
 
+The command line and the `--json` output are owrtfetch's stable interface. The ucode
+modules are internal and may change between releases.
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
