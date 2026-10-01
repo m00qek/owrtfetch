@@ -105,4 +105,11 @@ no_output_on_failure() {
 }
 check "a tarball without the copied paths is refused, and nothing is written" no_output_on_failure
 
+# The layer modules are copied with a glob; the check stands it for its directory.
+without_layer_modules() {
+	tarball src/owrtfetch.uc files
+	refuses "tarball lacks: src/owrtfetch$" gen --tarball "$TMP/v$VERSION.tar.gz" -o "$TMP/out.mk" "$VERSION"
+}
+check "a tarball without the layer modules under src/owrtfetch/ is refused" without_layer_modules
+
 exit $((failures > 0))

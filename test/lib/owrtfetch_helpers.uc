@@ -3,7 +3,9 @@
 // Running collect() and render() against the fixtures, and reading what they give.
 
 import { mock } from 'utest';
-import { collect, summarize, render, GLYPHS } from 'owrtfetch';
+import { collect } from 'owrtfetch.collect';
+import { summarize } from 'owrtfetch.summarize';
+import { render, GLYPHS } from 'owrtfetch.render';
 import { ENV } from 'owrtfetch_fixtures';
 
 export const RESET = '\x1b[0m';

@@ -83,9 +83,10 @@ After tagging a release, `make feed-makefile VERSION=<version> OUT=<feed>/owrtfe
 writes the Makefile for the [packages.ucode.dev](https://github.com/m00qek/packages.ucode.dev)
 feed from the release tarball.
 
-The code is one module, `src/owrtfetch.uc`, in four layers: `collect()` reads the system
-into data, `summarize()` turns it into labelled lines, `render()` lays them out beside the
-logo, and `main()` handles the command line.
+The code is in four modules, one for each layer: `src/owrtfetch/collect.uc` reads the
+system into data, `src/owrtfetch/summarize.uc` turns it into labelled lines,
+`src/owrtfetch/render.uc` lays them out beside the logo, and `src/owrtfetch.uc` handles
+the command line. Only `collect.uc` touches the system.
 
 ## License
 

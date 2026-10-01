@@ -1,7 +1,7 @@
 'use strict';
 
 import { describe, it, assert } from 'utest';
-import { render, fit, GLYPHS } from 'owrtfetch';
+import { render, fit, GLYPHS } from 'owrtfetch.render';
 import { RESET, BLUE, GRAY, GREEN, RED, columns, visible } from 'owrtfetch_helpers';
 
 const ASCII = GLYPHS.ascii, UTF8 = GLYPHS.utf8;

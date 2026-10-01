@@ -1,7 +1,8 @@
 'use strict';
 
 import { describe, it, assert } from 'utest';
-import { summarize, format_size, format_uptime, GLYPHS } from 'owrtfetch';
+import { summarize, format_size, format_uptime } from 'owrtfetch.summarize';
+import { GLYPHS } from 'owrtfetch.render';
 
 // The data summarize() gets from a router with nothing optional: no disks beyond what
 // a test adds, no networks, no Wi-Fi, no DHCP and no swap.

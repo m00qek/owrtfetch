@@ -2,7 +2,9 @@
 
 import { describe, assert, prop, gen } from 'utest';
 import { popen } from 'fs';
-import { render, format_size, format_uptime, shell_quote, GLYPHS } from 'owrtfetch';
+import { shell_quote } from 'owrtfetch.collect';
+import { format_size, format_uptime } from 'owrtfetch.summarize';
+import { render, GLYPHS } from 'owrtfetch.render';
 import { columns, visible } from 'owrtfetch_helpers';
 
 // Text with the characters a summary carries: letters, digits, punctuation, spaces

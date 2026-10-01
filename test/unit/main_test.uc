@@ -1,7 +1,8 @@
 'use strict';
 
 import { describe, it, afterEach, mock, assert } from 'utest';
-import { collect, main } from 'owrtfetch';
+import { main } from 'owrtfetch';
+import { collect } from 'owrtfetch.collect';
 import { ROUTER } from 'owrtfetch_fixtures';
 import { on } from 'owrtfetch_helpers';
 

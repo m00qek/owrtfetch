@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=owrtfetch
-PKG_VERSION:=0.1.0
+PKG_VERSION:=0.2.0
 PKG_RELEASE:=1
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=António Mora <m00qek@gmail.com>
@@ -31,6 +31,8 @@ define Package/owrtfetch/install
 	$(INSTALL_BIN) ./files/usr/bin/owrtfetch $(1)/usr/bin/owrtfetch
 	$(INSTALL_DIR) $(1)/usr/share/ucode
 	$(INSTALL_DATA) ./src/owrtfetch.uc $(1)/usr/share/ucode/owrtfetch.uc
+	$(INSTALL_DIR) $(1)/usr/share/ucode/owrtfetch
+	$(INSTALL_DATA) ./src/owrtfetch/*.uc $(1)/usr/share/ucode/owrtfetch/
 endef
 
 $(eval $(call BuildPackage,owrtfetch))

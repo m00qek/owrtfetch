@@ -1,7 +1,7 @@
 'use strict';
 
 import { describe, it, afterEach, mock, assert } from 'utest';
-import { GLYPHS } from 'owrtfetch';
+import { GLYPHS } from 'owrtfetch.render';
 import { ROUTER, AP, ENV, NO_LISTS } from 'owrtfetch_fixtures';
 import { collect_on, field, labels, overflowing } from 'owrtfetch_helpers';
 
